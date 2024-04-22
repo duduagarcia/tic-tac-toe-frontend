@@ -6,7 +6,7 @@ const handleSquareClick = (i) => {
     return;
   }
 
-  squares.value[i] = "X";
+  squares.value[i] = 'X';
 
   if (squares.value.every((square) => square !== null)) {
     return;
@@ -19,7 +19,7 @@ function randomNumber() {
   let random = Math.floor(Math.random() * 9);
   console.log(random);
   if (squares.value[random] === null) {
-    squares.value[random] = "O";
+    squares.value[random] = 'O';
   } else {
     randomNumber();
   }
@@ -32,7 +32,39 @@ function restartGame() {
 }
 
 function callIA() {
-  console.log("Chamando a IA");
+  const squaresCopy = squares.value.slice();
+  squaresCopy.map((square, index) => {
+    if (square === 'X') {
+      squaresCopy[index] = 1;
+    } else if (square === 'O') {
+      squaresCopy[index] = 2;
+    } else {
+      squaresCopy[index] = 0;
+    }
+  });
+  console.log('Chamando a IA');
+  console.log(squaresCopy);
+
+  const url = 'http://127.0.0.1:8000/check';
+  const stringGame = squaresCopy.join(',');
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status: stringGame }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Success:', data);
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 }
 </script>
 
