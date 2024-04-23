@@ -13,6 +13,7 @@ const handleSquareClick = (i) => {
   }
 
   randomNumber();
+  callIA();
 };
 
 function randomNumber() {
@@ -22,12 +23,14 @@ function randomNumber() {
   } else {
     randomNumber();
   }
-  callIA();
 }
 
 function restartGame() {
   squares.value = [null, null, null, null, null, null, null, null, null];
+  algoritms.value = [];
 }
+
+const algoritms = ref([]);
 
 function callIA() {
   const squaresCopy = squares.value.slice();
@@ -47,8 +50,8 @@ function callIA() {
   fetch(url, {
     method: 'POST',
     headers: {
-      'Access-Control-Allow-Origin': "*",
-      'Access-Control-Allow-Headers': "*",
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ status: stringGame }),
@@ -56,16 +59,45 @@ function callIA() {
     .then((response) => response.json())
     .then((data) => {
       console.log('Success:', data);
+      algoritms.value = [];
+      for (let key in data) {
+        let obj = {
+          key: key,
+          value: data[key],
+        };
+        algoritms.value.push(obj);
+      }
+
+      console.log(algoritms.value);
     })
     .catch((error) => {
       console.error('Error:', error);
     });
 }
+
+const subtitles = ref([
+  {
+    title: 'X perde',
+    number: 0,
+  },
+  {
+    title: 'X vence',
+    number: 1,
+  },
+  {
+    title: 'Empate',
+    number: 2,
+  },
+  {
+    title: 'Tem jogo',
+    number: 3,
+  },
+]);
 </script>
 
 <template>
   <div
-    class="min-w-full w-screen h-screen flex flex-col items-center p-5 text-center"
+    class="min-w-full w-screen h-screen flex flex-col items-center p-5 text-center overflow-x-hidden"
   >
     <h1 class="text-4xl my-5">T1 - Tic Tac Toe com ML</h1>
     <p>Alunos: Eduardo Garcia e Matheus Fernandes</p>
@@ -75,11 +107,33 @@ function callIA() {
       <div
         v-for="(i, index) in 9"
         :key="index"
-        class="w-20 h-20 sm:w-28 sm:h-28 bg-gray-200 flex justify-center items-center text-4xl cursor-pointer"
+        class="w-20 h-20 bg-gray-200 flex justify-center items-center text-4xl cursor-pointer"
         @click="handleSquareClick(index)"
       >
         {{ squares[index] }}
       </div>
+    </div>
+    <div class="flex gap-4 flex-wrap">
+      <table class="w-[200px] my-4">
+        <tr class="text-justify">
+          <td>Classe</td>
+          <td>Número</td>
+        </tr>
+        <tr v-for="(subtitle, index) in subtitles" :key="index">
+          <td class="text-justify py-3">{{ subtitle.title }}</td>
+          <td class="text-justify py-3">{{ subtitle.number }}</td>
+        </tr>
+      </table>
+      <table class="w-[200px] my-4">
+        <tr class="text-justify">
+          <td>Algoritmo</td>
+          <td>Resultado</td>
+        </tr>
+        <tr v-for="(algorithm, index) in algoritms" :key="index">
+          <td class="text-justify py-3">{{ algorithm.key.split('_')[1] }}</td>
+          <td class="text-justify py-3">{{ algorithm.value[0] }}</td>
+        </tr>
+      </table>
     </div>
     <div class="flex gap-4">
       <button
@@ -87,12 +141,6 @@ function callIA() {
         @click="restartGame"
       >
         Reiniciar
-      </button>
-      <button
-        class="mt-5 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        @click="callIA"
-      >
-        Verificar posição
       </button>
     </div>
   </div>
