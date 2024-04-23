@@ -17,14 +17,12 @@ const handleSquareClick = (i) => {
 
 function randomNumber() {
   let random = Math.floor(Math.random() * 9);
-  console.log(random);
   if (squares.value[random] === null) {
     squares.value[random] = 'O';
   } else {
     randomNumber();
   }
-
-  console.log(squares.value);
+  callIA();
 }
 
 function restartGame() {
@@ -42,17 +40,15 @@ function callIA() {
       squaresCopy[index] = 0;
     }
   });
-  console.log('Chamando a IA');
-  console.log(squaresCopy);
 
   const url = 'http://127.0.0.1:8000/check';
-  const stringGame = squaresCopy.join(',');
+  const stringGame = squaresCopy.join(', ');
 
   fetch(url, {
     method: 'POST',
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Origin': "*",
+      'Access-Control-Allow-Headers': "*",
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ status: stringGame }),
@@ -60,7 +56,6 @@ function callIA() {
     .then((response) => response.json())
     .then((data) => {
       console.log('Success:', data);
-      console.log(data);
     })
     .catch((error) => {
       console.error('Error:', error);
