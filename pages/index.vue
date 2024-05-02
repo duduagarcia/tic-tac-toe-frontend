@@ -6,7 +6,7 @@ const handleSquareClick = (i) => {
     return;
   }
 
-  squares.value[i] = 'X';
+  squares.value[i] = "X";
 
   if (squares.value.every((square) => square !== null)) {
     return;
@@ -19,7 +19,7 @@ const handleSquareClick = (i) => {
 function randomNumber() {
   let random = Math.floor(Math.random() * 9);
   if (squares.value[random] === null) {
-    squares.value[random] = 'O';
+    squares.value[random] = "O";
   } else {
     randomNumber();
   }
@@ -35,30 +35,30 @@ const algoritms = ref([]);
 function callIA() {
   const squaresCopy = squares.value.slice();
   squaresCopy.map((square, index) => {
-    if (square === 'X') {
+    if (square === "X") {
       squaresCopy[index] = 1;
-    } else if (square === 'O') {
+    } else if (square === "O") {
       squaresCopy[index] = 2;
     } else {
       squaresCopy[index] = 0;
     }
   });
 
-  const url = 'http://127.0.0.1:8000/check';
-  const stringGame = squaresCopy.join(', ');
+  const url = "http://127.0.0.1:8000/check";
+  const stringGame = squaresCopy.join(", ");
 
   fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': '*',
-      'Content-Type': 'application/json',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ status: stringGame }),
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log('Success:', data);
+      console.log("Success:", data);
       algoritms.value = [];
       for (let key in data) {
         let obj = {
@@ -71,25 +71,25 @@ function callIA() {
       console.log(algoritms.value);
     })
     .catch((error) => {
-      console.error('Error:', error);
+      console.error("Error:", error);
     });
 }
 
 const subtitles = ref([
   {
-    title: 'X perde',
+    title: "X perde",
     number: 0,
   },
   {
-    title: 'X vence',
+    title: "X vence",
     number: 1,
   },
   {
-    title: 'Empate',
+    title: "Empate",
     number: 2,
   },
   {
-    title: 'Tem jogo',
+    title: "Tem jogo",
     number: 3,
   },
 ]);
@@ -100,7 +100,7 @@ const subtitles = ref([
     class="min-w-full w-screen h-screen flex flex-col items-center p-5 text-center overflow-x-hidden"
   >
     <h1 class="text-4xl my-5">T1 - Tic Tac Toe com ML</h1>
-    <p>Alunos: Eduardo Garcia e Matheus Fernandes</p>
+    <p>Alunos: Eduardo Garcia, Matheus Fernandes e João Vitor Schwingel</p>
     <p>Professora: Silvia Moraes</p>
     <br />
     <div class="grid grid-cols-3 gap-2">
@@ -130,7 +130,7 @@ const subtitles = ref([
           <td>Resultado</td>
         </tr>
         <tr v-for="(algorithm, index) in algoritms" :key="index">
-          <td class="text-justify py-3">{{ algorithm.key.split('_')[1] }}</td>
+          <td class="text-justify py-3">{{ algorithm.key.split("_")[1] }}</td>
           <td class="text-justify py-3">{{ algorithm.value[0] }}</td>
         </tr>
       </table>
